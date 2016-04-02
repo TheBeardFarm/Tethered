@@ -1,9 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
 	private Animator _animator;
 	private float _horizontalSpeed = 5f;
+
+	[SerializeField]
+	private PlayerIdentity _identity;
 
 	private void Start()
 	{
@@ -18,7 +22,7 @@ public class PlayerController : MonoBehaviour
 	{
 		bool leftKey = IsLeftButtonDown();
 		bool rightKey = IsRightButtonDown();
-		
+
 		if (leftKey)
 		{
 			HandleInputLeft();
@@ -31,12 +35,28 @@ public class PlayerController : MonoBehaviour
 
 	private bool IsLeftButtonDown()
 	{
-		return Input.GetKey("left");
+		switch (_identity)
+		{
+			case PlayerIdentity.Red:
+				return Input.GetKey("left");
+
+			case PlayerIdentity.Blue:
+				return Input.GetKey("a");
+		}
+		throw new NotSupportedException();
 	}
 
 	private bool IsRightButtonDown()
 	{
-		return Input.GetKey("right");
+		switch (_identity)
+		{
+			case PlayerIdentity.Red:
+				return Input.GetKey("right");
+
+			case PlayerIdentity.Blue:
+				return Input.GetKey("d");
+		}
+		throw new NotSupportedException();
 	}
 
 	private void HandleInputLeft()
