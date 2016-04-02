@@ -77,6 +77,7 @@ public class PlayerController : MonoBehaviour
 	{
 		_rb2d.velocity = new Vector2(-_horizontalSpeed, _rb2d.velocity.y);
 		//transform.position += Vector3.right * _horizontalSpeed * Time.deltaTime;
+	}
 
 	private void HandleInputNone()
 	{
