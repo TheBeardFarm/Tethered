@@ -1,9 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
 	private Animator _animator;
+	private Rigidbody2D _rb2d;
 	private float _horizontalSpeed = 5f;
 
 	[SerializeField]
@@ -11,6 +13,8 @@ public class PlayerController : MonoBehaviour
 
 	private void Start()
 	{
+		_rb2d = GetComponent<Rigidbody2D>();
+		_rb2d.drag = 1;
 	}
 
 	private void Update()
@@ -30,6 +34,10 @@ public class PlayerController : MonoBehaviour
 		if (rightKey)
 		{
 			HandleInputRight();
+		}
+		if (!leftKey && !rightKey)
+		{
+			HandleInputNone();
 		}
 	}
 
@@ -61,11 +69,17 @@ public class PlayerController : MonoBehaviour
 
 	private void HandleInputLeft()
 	{
-		transform.position += Vector3.left * _horizontalSpeed * Time.deltaTime;
+		_rb2d.velocity = new Vector2(_horizontalSpeed, _rb2d.velocity.y);
+		//transform.position += Vector3.left * _horizontalSpeed * Time.deltaTime;
 	}
 
 	private void HandleInputRight()
 	{
-		transform.position += Vector3.right * _horizontalSpeed * Time.deltaTime;
+		_rb2d.velocity = new Vector2(-_horizontalSpeed, _rb2d.velocity.y);
+		//transform.position += Vector3.right * _horizontalSpeed * Time.deltaTime;
+
+	private void HandleInputNone()
+	{
+		_rb2d.velocity = new Vector2(0, _rb2d.velocity.y);
 	}
 }
