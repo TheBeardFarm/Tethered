@@ -1,40 +1,71 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System;
+using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
+	private Animator _animator;
+	private float _horizontalSpeed = 5f;
 
-    private Animator animator;
+	[SerializeField]
+	private PlayerIdentity _identity;
 
-	// Use this for initialization
-	void Start () {
-        //animator = this.GetComponent<Animator>();
+	private void Start()
+	{
 	}
-	
-	// Update is called once per frame
-	void Update () {
-        	//ANIMATOR CODE IS FOR A 2D PROJECT - Uncomment if this is going to be a 2D game
-        	//And attach an animator with a "direction" int parameter.
-        	var leftKey = Input.GetKey("left");
-        	var rightKey = Input.GetKey("right");
 
-        	var move = new Vector3(Input.GetAxis("Horizontal"), 0, 0);
-        	var speed = 5.0f;
+	private void Update()
+	{
+		HandleInput();
+	}
 
-        	//If holding both keys, don't move
-        	if (leftKey && rightKey) {
-        	    //animator.SetInteger("Direction", 0);
-        	}
-        	else if (leftKey) {
-         	    //animator.SetInteger("Direction", -1);
-         	    transform.position += move * speed * Time.deltaTime;
-       		}
-        	else if (rightKey) {
-                //animator.SetInteger("Direction", 1);
-           	    transform.position += move * speed * Time.deltaTime;
-        	}
-        	//If no keys down, don't move
-        	else {
-                //animator.SetInteger("Direction", 0);
-        	}
+	private void HandleInput()
+	{
+		bool leftKey = IsLeftButtonDown();
+		bool rightKey = IsRightButtonDown();
+
+		if (leftKey)
+		{
+			HandleInputLeft();
+		}
+		if (rightKey)
+		{
+			HandleInputRight();
+		}
+	}
+
+	private bool IsLeftButtonDown()
+	{
+		switch (_identity)
+		{
+			case PlayerIdentity.Red:
+				return Input.GetKey("left");
+
+			case PlayerIdentity.Blue:
+				return Input.GetKey("a");
+		}
+		throw new NotSupportedException();
+	}
+
+	private bool IsRightButtonDown()
+	{
+		switch (_identity)
+		{
+			case PlayerIdentity.Red:
+				return Input.GetKey("right");
+
+			case PlayerIdentity.Blue:
+				return Input.GetKey("d");
+		}
+		throw new NotSupportedException();
+	}
+
+	private void HandleInputLeft()
+	{
+		transform.position += Vector3.left * _horizontalSpeed * Time.deltaTime;
+	}
+
+	private void HandleInputRight()
+	{
+		transform.position += Vector3.right * _horizontalSpeed * Time.deltaTime;
 	}
 }
