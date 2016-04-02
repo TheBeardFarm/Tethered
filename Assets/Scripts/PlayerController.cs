@@ -5,14 +5,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 	private Animator _animator;
-<<<<<<< HEAD
     private Rigidbody2D _rb2d;
 	public float _horizontalSpeed = 5f;
     private Transform groundCheck;
-=======
-	private Rigidbody2D _rb2d;
-	private float _horizontalSpeed = 5f;
->>>>>>> refs/remotes/TheBeardFarm/master
 
 	[SerializeField]
 	private PlayerIdentity _identity;
@@ -22,15 +17,10 @@ public class PlayerController : MonoBehaviour
 
 	private void Start()
 	{
-<<<<<<< HEAD
         _animator = this.GetComponent<Animator>();
         _rb2d = this.GetComponent<Rigidbody2D>();
         _rb2d.drag = 1;
         groundCheck = transform.Find("groundCheck");
-=======
-		_rb2d = GetComponent<Rigidbody2D>();
-		_rb2d.drag = 1;
->>>>>>> refs/remotes/TheBeardFarm/master
 	}
 
 	private void Update()
@@ -66,17 +56,11 @@ public class PlayerController : MonoBehaviour
 		{
 			HandleInputRight();
 		}
-<<<<<<< HEAD
+
         if (!leftKey && !rightKey)
         {
             HandleInputNone();
         }
-=======
-		if (!leftKey && !rightKey)
-		{
-			HandleInputNone();
-		}
->>>>>>> refs/remotes/TheBeardFarm/master
 	}
 
 	private bool IsLeftButtonDown()
@@ -120,27 +104,12 @@ public class PlayerController : MonoBehaviour
 
 	private void HandleInputLeft()
 	{
-<<<<<<< HEAD
         _rb2d.velocity = new Vector2(-_horizontalSpeed, _rb2d.velocity.y);
-=======
-		_rb2d.velocity = new Vector2(_horizontalSpeed, _rb2d.velocity.y);
-		//transform.position += Vector3.left * _horizontalSpeed * Time.deltaTime;
->>>>>>> refs/remotes/TheBeardFarm/master
 	}
 
 	private void HandleInputRight()
 	{
-<<<<<<< HEAD
         _rb2d.velocity = new Vector2(_horizontalSpeed, _rb2d.velocity.y);
-=======
-		_rb2d.velocity = new Vector2(-_horizontalSpeed, _rb2d.velocity.y);
-		//transform.position += Vector3.right * _horizontalSpeed * Time.deltaTime;
-	}
-
-	private void HandleInputNone()
-	{
-		_rb2d.velocity = new Vector2(0, _rb2d.velocity.y);
->>>>>>> refs/remotes/TheBeardFarm/master
 	}
 
     private void HandleInputNone()
