@@ -4,83 +4,118 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
-	private Animator _animator;
-	private Rigidbody2D _rb2d;
-	private float _horizontalSpeed = 5f;
+    private Animator _animator;
+    private Rigidbody2D _rb2d;
+    public float _horizontalSpeed = 5f;
+    private Transform groundCheck;
 
-	[SerializeField]
-	private PlayerIdentity _identity;
+    [SerializeField]
+    private PlayerIdentity _identity;
 
-	private void Start()
-	{
-		_rb2d = GetComponent<Rigidbody2D>();
-		_rb2d.drag = 1;
-	}
+    //Flags for jump control
+    private bool grounded = false;
+    public bool jump = false;
 
-	private void Update()
-	{
-		HandleInput();
-	}
+    private void Start()
+    {
+        _animator = this.GetComponent<Animator>();
+        _rb2d = this.GetComponent<Rigidbody2D>();
+        _rb2d.drag = 1;
+        groundCheck = transform.Find("groundCheck");
+    }
 
-	private void HandleInput()
-	{
-		bool leftKey = IsLeftButtonDown();
-		bool rightKey = IsRightButtonDown();
+    private void Update()
+    {
+        HandleInput();
+        grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
 
-		if (leftKey)
-		{
-			HandleInputLeft();
-		}
-		if (rightKey)
-		{
-			HandleInputRight();
-		}
-		if (!leftKey && !rightKey)
-		{
-			HandleInputNone();
-		}
-	}
+        if (IsUpButtonDown() && grounded)
+        {
+            jump = true;
+        }
+    }
 
-	private bool IsLeftButtonDown()
-	{
-		switch (_identity)
-		{
-			case PlayerIdentity.Red:
-				return Input.GetKey("left");
+    void FixedUpdate()
+    {
+        if (jump)
+        {
+            _rb2d.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
+            jump = false;
+        }
+    }
 
-			case PlayerIdentity.Blue:
-				return Input.GetKey("a");
-		}
-		throw new NotSupportedException();
-	}
+    private void HandleInput()
+    {
+        bool leftKey = IsLeftButtonDown();
+        bool rightKey = IsRightButtonDown();
 
-	private bool IsRightButtonDown()
-	{
-		switch (_identity)
-		{
-			case PlayerIdentity.Red:
-				return Input.GetKey("right");
+        if (leftKey)
+        {
+            HandleInputLeft();
+        }
+        if (rightKey)
+        {
+            HandleInputRight();
+        }
 
-			case PlayerIdentity.Blue:
-				return Input.GetKey("d");
-		}
-		throw new NotSupportedException();
-	}
+        if (!leftKey && !rightKey)
+        {
+            HandleInputNone();
+        }
+    }
 
-	private void HandleInputLeft()
-	{
-		_rb2d.velocity = new Vector2(_horizontalSpeed, _rb2d.velocity.y);
-		//transform.position += Vector3.left * _horizontalSpeed * Time.deltaTime;
-	}
+    private bool IsLeftButtonDown()
+    {
+        switch (_identity)
+        {
+            case PlayerIdentity.Red:
+                return Input.GetKey("left");
 
-	private void HandleInputRight()
-	{
-		_rb2d.velocity = new Vector2(-_horizontalSpeed, _rb2d.velocity.y);
-		//transform.position += Vector3.right * _horizontalSpeed * Time.deltaTime;
-	}
+            case PlayerIdentity.Blue:
+                return Input.GetKey("a");
+        }
+        throw new NotSupportedException();
+    }
 
-	private void HandleInputNone()
-	{
-		_rb2d.velocity = new Vector2(0, _rb2d.velocity.y);
-	}
+    private bool IsRightButtonDown()
+    {
+        switch (_identity)
+        {
+            case PlayerIdentity.Red:
+                return Input.GetKey("right");
+
+            case PlayerIdentity.Blue:
+                return Input.GetKey("d");
+        }
+        throw new NotSupportedException();
+    }
+
+    private bool IsUpButtonDown()
+    {
+        switch (_identity)
+        {
+            case PlayerIdentity.Red:
+                return Input.GetKey("up");
+
+            case PlayerIdentity.Blue:
+                return Input.GetKey("w");
+        }
+        throw new NotSupportedException();
+    }
+
+    private void HandleInputLeft()
+    {
+        _rb2d.velocity = new Vector2(-_horizontalSpeed, _rb2d.velocity.y);
+    }
+
+    private void HandleInputRight()
+    {
+        _rb2d.velocity = new Vector2(_horizontalSpeed, _rb2d.velocity.y);
+    }
+
+    private void HandleInputNone()
+    {
+        _rb2d.velocity = new Vector2(0, _rb2d.velocity.y);
+    }
+
 }
