@@ -12,9 +12,8 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	private PlayerIdentity _identity;
 
-	//Flags for jump control
+	//Flag for jump control
 	private bool grounded = false;
-	public bool jump = false;
 
 	private void Start()
 	{
@@ -26,29 +25,20 @@ public class PlayerController : MonoBehaviour
 
 	private void Update()
 	{
-		HandleInput();
 		grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
-
-		if (IsUpButtonDown() && grounded)
-		{
-			jump = true;
-		}
-	}
-
-	void FixedUpdate()
-	{
-		if (jump)
-		{
-			_rb2d.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
-			jump = false;
-		}
+		HandleInput();
 	}
 
 	private void HandleInput()
 	{
 		bool leftKey = IsLeftButtonDown();
 		bool rightKey = IsRightButtonDown();
+		bool upKey = IsUpButtonDown();
 
+		if (upKey && grounded)
+		{
+			HandleInputJump();
+		}
 		if (leftKey)
 		{
 			HandleInputLeft();
@@ -63,6 +53,8 @@ public class PlayerController : MonoBehaviour
 			HandleInputNone();
 		}
 	}
+
+	#region Button Down Checks
 
 	private bool IsLeftButtonDown()
 	{
@@ -103,6 +95,10 @@ public class PlayerController : MonoBehaviour
 		throw new NotSupportedException();
 	}
 
+	#endregion
+
+	#region Input Handlers
+
 	private void HandleInputLeft()
 	{
 		_rb2d.velocity = new Vector2(-_horizontalSpeed, _rb2d.velocity.y);
@@ -117,5 +113,13 @@ public class PlayerController : MonoBehaviour
 	{
 		_rb2d.velocity = new Vector2(0, _rb2d.velocity.y);
 	}
+
+	private void HandleInputJump()
+	{
+		_rb2d.velocity = new Vector2(_rb2d.velocity.x, 0);
+		_rb2d.AddForce(new Vector2(0, 15), ForceMode2D.Impulse);
+	}
+
+	#endregion
 
 }
