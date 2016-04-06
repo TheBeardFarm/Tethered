@@ -6,27 +6,31 @@ public class PlayerController : MonoBehaviour
 {
 	private Animator _animator;
 	private Rigidbody2D _rb2d;
-	public float _horizontalSpeed = 5f;
-	private Transform groundCheck;
+	private float _horizontalSpeed = 5f;
+	private Transform _groundTraceTarget;
+	private bool _isStandingOnGround = false;
 
 	[SerializeField]
 	private PlayerIdentity _identity;
-
-	//Flag for jump control
-	private bool grounded = false;
+	
 
 	private void Start()
 	{
 		_animator = this.GetComponent<Animator>();
 		_rb2d = this.GetComponent<Rigidbody2D>();
 		_rb2d.drag = 1;
-		groundCheck = transform.Find("groundCheck");
+		_groundTraceTarget = transform.Find("groundCheck");
 	}
 
 	private void Update()
 	{
-		grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
+		PrepareUpdate();
 		HandleInput();
+	}
+
+	private void PrepareUpdate()
+	{
+		_isStandingOnGround = Physics2D.Linecast(transform.position, _groundTraceTarget.position, 1 << LayerMask.NameToLayer("Ground"));
 	}
 
 	private void HandleInput()
@@ -35,12 +39,12 @@ public class PlayerController : MonoBehaviour
 		bool rightKey = IsRightButtonDown();
 		bool upKey = IsUpButtonDown();
 
-		if (upKey && grounded)
+		if (upKey && _isStandingOnGround)
 		{
 			HandleInputJump();
 		}
 
-		if (leftKey && rightKey)
+		if (leftKey == rightKey)
 		{
 			HandleInputNone();
 		}
@@ -51,11 +55,6 @@ public class PlayerController : MonoBehaviour
 		else if (rightKey)
 		{
 			HandleInputRight();
-		}
-
-		if (!leftKey && !rightKey)
-		{
-			HandleInputNone();
 		}
 	}
 
