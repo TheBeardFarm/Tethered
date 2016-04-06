@@ -6,19 +6,26 @@ public class PlayerController : MonoBehaviour
 {
 	private Animator _animator;
 	private Rigidbody2D _rb2d;
-	private float _horizontalSpeed = 5f;
+	public float _horizontalSpeed = 5f;
+	private Transform groundCheck;
 
 	[SerializeField]
 	private PlayerIdentity _identity;
 
+	//Flag for jump control
+	private bool grounded = false;
+
 	private void Start()
 	{
-		_rb2d = GetComponent<Rigidbody2D>();
+		_animator = this.GetComponent<Animator>();
+		_rb2d = this.GetComponent<Rigidbody2D>();
 		_rb2d.drag = 1;
+		groundCheck = transform.Find("groundCheck");
 	}
 
 	private void Update()
 	{
+		grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
 		HandleInput();
 	}
 
@@ -26,20 +33,33 @@ public class PlayerController : MonoBehaviour
 	{
 		bool leftKey = IsLeftButtonDown();
 		bool rightKey = IsRightButtonDown();
+		bool upKey = IsUpButtonDown();
 
-		if (leftKey)
+		if (upKey && grounded)
+		{
+			HandleInputJump();
+		}
+
+		if (leftKey && rightKey)
+		{
+			HandleInputNone();
+		}
+		else if (leftKey)
 		{
 			HandleInputLeft();
 		}
-		if (rightKey)
+		else if (rightKey)
 		{
 			HandleInputRight();
 		}
+
 		if (!leftKey && !rightKey)
 		{
 			HandleInputNone();
 		}
 	}
+
+	#region Button Down Checks
 
 	private bool IsLeftButtonDown()
 	{
@@ -67,20 +87,47 @@ public class PlayerController : MonoBehaviour
 		throw new NotSupportedException();
 	}
 
+	private bool IsUpButtonDown()
+	{
+		switch (_identity)
+		{
+			case PlayerIdentity.Red:
+				return Input.GetKey("up");
+
+			case PlayerIdentity.Blue:
+				return Input.GetKey("w");
+		}
+		throw new NotSupportedException();
+	}
+
+	#endregion
+
+	#region Input Handlers
+
 	private void HandleInputLeft()
 	{
-		_rb2d.velocity = new Vector2(_horizontalSpeed, _rb2d.velocity.y);
-		//transform.position += Vector3.left * _horizontalSpeed * Time.deltaTime;
+		_animator.SetInteger("Direction", -1);
+		_rb2d.velocity = new Vector2(-_horizontalSpeed, _rb2d.velocity.y);
 	}
 
 	private void HandleInputRight()
 	{
-		_rb2d.velocity = new Vector2(-_horizontalSpeed, _rb2d.velocity.y);
-		//transform.position += Vector3.right * _horizontalSpeed * Time.deltaTime;
+		_animator.SetInteger("Direction", 1);
+		_rb2d.velocity = new Vector2(_horizontalSpeed, _rb2d.velocity.y);
 	}
 
 	private void HandleInputNone()
 	{
+		_animator.SetInteger("Direction", 0);
 		_rb2d.velocity = new Vector2(0, _rb2d.velocity.y);
 	}
+
+	private void HandleInputJump()
+	{
+		_rb2d.velocity = new Vector2(_rb2d.velocity.x, 0);
+		_rb2d.AddForce(new Vector2(0, 15), ForceMode2D.Impulse);
+	}
+
+	#endregion
+
 }
