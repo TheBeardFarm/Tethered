@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour
 		throw new NotSupportedException();
 	}
 
-	#endregion
+	#endregion Button Down Checks
 
 	#region Input Handlers
 
@@ -131,5 +131,5 @@ public class PlayerController : MonoBehaviour
 		_rb2d.AddForce(new Vector2(0, 15), ForceMode2D.Impulse);
 	}
 
-	#endregion
+	#endregion Input Handlers
 }
