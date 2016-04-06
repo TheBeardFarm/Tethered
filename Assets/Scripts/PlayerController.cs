@@ -7,34 +7,29 @@ public class PlayerController : MonoBehaviour
 	private Animator _animator;
 	private Rigidbody2D _rb2d;
 	private float _horizontalSpeed = 5f;
-	private Transform _groundTraceTarget;
-	private bool _isStandingOnGround = false;
+	private PlayerGroundDetector _groundTrigger;
 
 	[SerializeField]
 	private PlayerIdentity _identity;
 
+	public PlayerIdentity Identity { get { return _identity; } }
+
 	public bool CanJump
 	{
-		get { return _isStandingOnGround; }
+		get { return _groundTrigger.StandingOnGround; }
 	}
 
 	private void Start()
 	{
-		_animator = this.GetComponent<Animator>();
-		_rb2d = this.GetComponent<Rigidbody2D>();
+		_animator = GetComponent<Animator>();
+		_rb2d = GetComponent<Rigidbody2D>();
 		_rb2d.drag = 1;
-		_groundTraceTarget = transform.Find("groundCheck");
+		_groundTrigger = transform.GetComponentInChildren<PlayerGroundDetector>();
 	}
 
 	private void Update()
 	{
-		PrepareUpdate();
 		HandleInput();
-	}
-
-	private void PrepareUpdate()
-	{
-		_isStandingOnGround = Physics2D.Linecast(transform.position, _groundTraceTarget.position, 1 << LayerMask.NameToLayer("Ground"));
 	}
 
 	private void HandleInput()
