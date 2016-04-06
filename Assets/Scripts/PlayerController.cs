@@ -39,11 +39,16 @@ public class PlayerController : MonoBehaviour
 		{
 			HandleInputJump();
 		}
-		if (leftKey)
+
+		if (leftKey && rightKey)
+		{
+			HandleInputNone();
+		}
+		else if (leftKey)
 		{
 			HandleInputLeft();
 		}
-		if (rightKey)
+		else if (rightKey)
 		{
 			HandleInputRight();
 		}
@@ -101,16 +106,19 @@ public class PlayerController : MonoBehaviour
 
 	private void HandleInputLeft()
 	{
+		_animator.SetInteger("Direction", -1);
 		_rb2d.velocity = new Vector2(-_horizontalSpeed, _rb2d.velocity.y);
 	}
 
 	private void HandleInputRight()
 	{
+		_animator.SetInteger("Direction", 1);
 		_rb2d.velocity = new Vector2(_horizontalSpeed, _rb2d.velocity.y);
 	}
 
 	private void HandleInputNone()
 	{
+		_animator.SetInteger("Direction", 0);
 		_rb2d.velocity = new Vector2(0, _rb2d.velocity.y);
 	}
 
