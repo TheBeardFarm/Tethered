@@ -12,7 +12,11 @@ public class PlayerController : MonoBehaviour
 
 	[SerializeField]
 	private PlayerIdentity _identity;
-	
+
+	public bool CanJump
+	{
+		get { return _isStandingOnGround; }
+	}
 
 	private void Start()
 	{
@@ -39,7 +43,7 @@ public class PlayerController : MonoBehaviour
 		bool rightKey = IsRightButtonDown();
 		bool upKey = IsUpButtonDown();
 
-		if (upKey && _isStandingOnGround)
+		if (upKey && CanJump)
 		{
 			HandleInputJump();
 		}
@@ -128,5 +132,4 @@ public class PlayerController : MonoBehaviour
 	}
 
 	#endregion
-
 }
