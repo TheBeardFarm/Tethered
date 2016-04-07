@@ -1,21 +1,29 @@
 ﻿using System;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerController : MonoBehaviour
+[RequireComponent(typeof(Tether))]
+public class Player : MonoBehaviour
 {
 	private Animator _animator;
 	private Rigidbody2D _rb2d;
 	private PlayerGroundDetector _groundTrigger;
+	private Tether _tether;
+	private GameObject _tetherAnchor;
 
 	[SerializeField]
 	private PlayerIdentity _identity;
-	[SerializeField]
+
+	[SerializeField, Range(0, float.MaxValue)]
 	private float _walkSpeed = 25f;
-	[SerializeField]
+
+	[SerializeField, Range(0, float.MaxValue)]
 	private float _jumpPower = 15f;
 
 	public PlayerIdentity Identity { get { return _identity; } }
+
+	public GameObject TetherAnchor { get { return _tetherAnchor ?? (_tetherAnchor = transform.Find("tetherAnchor").gameObject); } }
 
 	public bool CanJump
 	{
@@ -27,7 +35,8 @@ public class PlayerController : MonoBehaviour
 		_animator = GetComponent<Animator>();
 		_rb2d = GetComponent<Rigidbody2D>();
 		_rb2d.drag = 1;
-		_groundTrigger = transform.GetComponentInChildren<PlayerGroundDetector>();
+		_groundTrigger = GetComponentInChildren<PlayerGroundDetector>();
+		_tether = GetComponent<Tether>();
 	}
 
 	private void Update()
