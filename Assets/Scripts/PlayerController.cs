@@ -6,11 +6,14 @@ public class PlayerController : MonoBehaviour
 {
 	private Animator _animator;
 	private Rigidbody2D _rb2d;
-	private float _horizontalSpeed = 5f;
 	private PlayerGroundDetector _groundTrigger;
 
 	[SerializeField]
 	private PlayerIdentity _identity;
+	[SerializeField]
+	private float _walkSpeed = 25f;
+	[SerializeField]
+	private float _jumpPower = 15f;
 
 	public PlayerIdentity Identity { get { return _identity; } }
 
@@ -40,20 +43,19 @@ public class PlayerController : MonoBehaviour
 
 		if (upKey && CanJump)
 		{
-			HandleInputJump();
+			Jump();
 		}
-
 		if (leftKey == rightKey)
 		{
-			HandleInputNone();
+			StandStill();
 		}
 		else if (leftKey)
 		{
-			HandleInputLeft();
+			MoveLeft();
 		}
 		else if (rightKey)
 		{
-			HandleInputRight();
+			MoveRight();
 		}
 	}
 
@@ -102,28 +104,38 @@ public class PlayerController : MonoBehaviour
 
 	#region Input Handlers
 
-	private void HandleInputLeft()
+	private void MoveLeft()
 	{
 		_animator.SetInteger("Direction", -1);
-		_rb2d.velocity = new Vector2(-_horizontalSpeed, _rb2d.velocity.y);
+		var newVelocity = _rb2d.velocity.x;
+		if (newVelocity > -_walkSpeed)
+		{
+			newVelocity = Math.Max(newVelocity - _walkSpeed, -_walkSpeed);
+		}
+		_rb2d.velocity = new Vector2(newVelocity, _rb2d.velocity.y);
 	}
 
-	private void HandleInputRight()
+	private void MoveRight()
 	{
 		_animator.SetInteger("Direction", 1);
-		_rb2d.velocity = new Vector2(_horizontalSpeed, _rb2d.velocity.y);
+		var newVelocity = _rb2d.velocity.x;
+		if (newVelocity < _walkSpeed)
+		{
+			newVelocity = Math.Min(newVelocity + _walkSpeed, _walkSpeed);
+		}
+		_rb2d.velocity = new Vector2(newVelocity, _rb2d.velocity.y);
 	}
 
-	private void HandleInputNone()
+	private void StandStill()
 	{
 		_animator.SetInteger("Direction", 0);
 		_rb2d.velocity = new Vector2(0, _rb2d.velocity.y);
 	}
 
-	private void HandleInputJump()
+	private void Jump()
 	{
 		_rb2d.velocity = new Vector2(_rb2d.velocity.x, 0);
-		_rb2d.AddForce(new Vector2(0, 15), ForceMode2D.Impulse);
+		_rb2d.AddForce(new Vector2(0, _jumpPower), ForceMode2D.Impulse);
 	}
 
 	#endregion Input Handlers
