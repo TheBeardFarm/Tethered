@@ -10,7 +10,6 @@ public class PlayerGroundDetector : MonoBehaviour
 	private void OnTriggerEnter2D(Collider2D other)
 	{
 		_collisionCount++;
-		Debug.Log("Collision with " + other);
 	}
 
 	private void OnTriggerExit2D(Collider2D other)
