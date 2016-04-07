@@ -6,26 +6,29 @@ public class PlayerController : MonoBehaviour
 {
 	private Animator _animator;
 	private Rigidbody2D _rb2d;
-	public float _horizontalSpeed = 5f;
-	private Transform groundCheck;
+	private float _horizontalSpeed = 5f;
+	private PlayerGroundDetector _groundTrigger;
 
 	[SerializeField]
 	private PlayerIdentity _identity;
 
-	//Flag for jump control
-	private bool grounded = false;
+	public PlayerIdentity Identity { get { return _identity; } }
+
+	public bool CanJump
+	{
+		get { return _groundTrigger.StandingOnGround; }
+	}
 
 	private void Start()
 	{
-		_animator = this.GetComponent<Animator>();
-		_rb2d = this.GetComponent<Rigidbody2D>();
+		_animator = GetComponent<Animator>();
+		_rb2d = GetComponent<Rigidbody2D>();
 		_rb2d.drag = 1;
-		groundCheck = transform.Find("groundCheck");
+		_groundTrigger = transform.GetComponentInChildren<PlayerGroundDetector>();
 	}
 
 	private void Update()
 	{
-		grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
 		HandleInput();
 	}
 
@@ -35,12 +38,12 @@ public class PlayerController : MonoBehaviour
 		bool rightKey = IsRightButtonDown();
 		bool upKey = IsUpButtonDown();
 
-		if (upKey && grounded)
+		if (upKey && CanJump)
 		{
 			HandleInputJump();
 		}
 
-		if (leftKey && rightKey)
+		if (leftKey == rightKey)
 		{
 			HandleInputNone();
 		}
@@ -51,11 +54,6 @@ public class PlayerController : MonoBehaviour
 		else if (rightKey)
 		{
 			HandleInputRight();
-		}
-
-		if (!leftKey && !rightKey)
-		{
-			HandleInputNone();
 		}
 	}
 
@@ -100,7 +98,7 @@ public class PlayerController : MonoBehaviour
 		throw new NotSupportedException();
 	}
 
-	#endregion
+	#endregion Button Down Checks
 
 	#region Input Handlers
 
@@ -128,6 +126,5 @@ public class PlayerController : MonoBehaviour
 		_rb2d.AddForce(new Vector2(0, 15), ForceMode2D.Impulse);
 	}
 
-	#endregion
-
+	#endregion Input Handlers
 }
