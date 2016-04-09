@@ -24,3 +24,8 @@ ExportedObj/
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
+
+# Other files from diffenent unity versions
+ProjectSettings/ProjectVersion.txt
+ProjectSettings/ProjectSettings.asset
+Assets/UnityVS.meta
