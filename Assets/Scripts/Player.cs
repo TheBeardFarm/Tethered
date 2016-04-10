@@ -42,6 +42,18 @@ public class Player : MonoBehaviour
 	private void Update()
 	{
 		HandleInput();
+
+		//Updates the rising/falling booleans for the animator
+		if (CanJump && !_animator.GetBool("IsJumpingUp"))
+		{
+			_animator.SetBool("IsJumpingUp", false);
+			_animator.SetBool("IsFallingDown", false);
+		} 
+		else if (_rb2d.velocity.y < 0.1)
+		{
+			_animator.SetBool("IsJumpingUp", false);
+			_animator.SetBool("IsFallingDown", true);
+		}
 	}
 
 	private void HandleInput()
@@ -143,6 +155,8 @@ public class Player : MonoBehaviour
 
 	private void Jump()
 	{
+		_animator.SetBool("IsJumpingUp", true);
+		_animator.SetBool("IsFallingDown", false);
 		_rb2d.velocity = new Vector2(_rb2d.velocity.x, 0);
 		_rb2d.AddForce(new Vector2(0, _jumpPower), ForceMode2D.Impulse);
 	}
