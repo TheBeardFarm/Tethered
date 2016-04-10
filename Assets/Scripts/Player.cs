@@ -10,7 +10,6 @@ public class Player : MonoBehaviour
 	private Rigidbody2D _rb2d;
 	private PlayerGroundDetector _groundTrigger;
 	private Tether _tether;
-	private GameObject _tetherAnchor;
 
 	[SerializeField]
 	private PlayerIdentity _identity;
@@ -22,9 +21,7 @@ public class Player : MonoBehaviour
 	private float _jumpPower;
 
 	public PlayerIdentity Identity { get { return _identity; } }
-
-	public GameObject TetherAnchor { get { return _tetherAnchor ?? (_tetherAnchor = transform.Find("tetherAnchor").gameObject); } }
-
+	
 	public bool CanJump
 	{
 		get { return _groundTrigger.StandingOnGround; }
