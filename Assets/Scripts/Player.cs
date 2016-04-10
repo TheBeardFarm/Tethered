@@ -42,14 +42,11 @@ public class Player : MonoBehaviour
 	private void Update()
 	{
 		HandleInput();
-		ApplyForces();
+		UpdateJumpingAnimator();
 	}
 
-	private void ApplyForces()
+	private void UpdateJumpingAnimator()
 	{
-		//_rb2d.AddForce(Physics2D.gravity, ForceMode2D.Force);
-
-		//Updates the rising/falling booleans for the animator
 		if (CanJump && !_animator.GetBool("IsJumpingUp"))
 		{
 			_animator.SetBool("IsJumpingUp", false);
