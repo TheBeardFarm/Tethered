@@ -30,6 +30,14 @@ public class Player : MonoBehaviour
 		get { return _groundTrigger.StandingOnGround; }
 	}
 
+	public bool outOfBounds
+	{
+		get { return _groundTrigger.playerOutOfBounds; }
+		set { _groundTrigger.playerOutOfBounds = value; }
+	}
+
+	public Vector3 respawnPosition = new Vector3(-3, 2, 0);
+
 	private void Start()
 	{
 		_animator = GetComponent<Animator>();
@@ -41,6 +49,15 @@ public class Player : MonoBehaviour
 
 	private void Update()
 	{
+		if (outOfBounds)
+		{
+			transform.position = respawnPosition;
+			_rb2d.velocity = new Vector2(0, 0);
+			_animator.SetBool("IsJumpingUp", false);
+			_animator.SetBool("IsFallingDown", false);
+			outOfBounds = false;
+		}
+
 		HandleInput();
 
 		//Updates the rising/falling booleans for the animator
@@ -48,7 +65,7 @@ public class Player : MonoBehaviour
 		{
 			_animator.SetBool("IsJumpingUp", false);
 			_animator.SetBool("IsFallingDown", false);
-		} 
+		}
 		else if (_rb2d.velocity.y < 0.1)
 		{
 			_animator.SetBool("IsJumpingUp", false);
@@ -128,6 +145,14 @@ public class Player : MonoBehaviour
 	private void MoveLeft()
 	{
 		_animator.SetInteger("Direction", -1);
+		//Flip the sprite
+		Vector3 theScale = transform.localScale;
+		if (theScale.x > 0)
+		{
+			theScale.x *= -1;
+		}
+		transform.localScale = theScale;
+
 		var newVelocity = _rb2d.velocity.x;
 		if (newVelocity > -_walkSpeed)
 		{
@@ -139,6 +164,14 @@ public class Player : MonoBehaviour
 	private void MoveRight()
 	{
 		_animator.SetInteger("Direction", 1);
+		//Flip the sprite
+		Vector3 theScale = transform.localScale;
+		if (theScale.x < 0)
+		{
+			theScale.x *= -1;
+		}
+		transform.localScale = theScale;
+
 		var newVelocity = _rb2d.velocity.x;
 		if (newVelocity < _walkSpeed)
 		{
