@@ -16,10 +16,10 @@ public class Player : MonoBehaviour
 	private PlayerIdentity _identity;
 
 	[SerializeField, Range(0, float.MaxValue)]
-	private float _walkSpeed = 25f;
+	private float _walkSpeed;
 
 	[SerializeField, Range(0, float.MaxValue)]
-	private float _jumpPower = 15f;
+	private float _jumpPower;
 
 	public PlayerIdentity Identity { get { return _identity; } }
 
@@ -42,6 +42,12 @@ public class Player : MonoBehaviour
 	private void Update()
 	{
 		HandleInput();
+		ApplyForces();
+	}
+
+	private void ApplyForces()
+	{
+		_rb2d.AddForce(Physics2D.gravity, ForceMode2D.Force);
 	}
 
 	private void HandleInput()
@@ -116,10 +122,15 @@ public class Player : MonoBehaviour
 	private void MoveLeft()
 	{
 		_animator.SetInteger("Direction", -1);
-		var newVelocity = _rb2d.velocity.x;
-		if (newVelocity > -_walkSpeed)
+		var maxSpeed = _walkSpeed;
+		if (!CanJump)
 		{
-			newVelocity = Math.Max(newVelocity - _walkSpeed, -_walkSpeed);
+			maxSpeed *= 0.1f;
+		}
+		var newVelocity = _rb2d.velocity.x;
+		if (newVelocity > -maxSpeed)
+		{
+			newVelocity = Math.Max(newVelocity - maxSpeed, -maxSpeed);
 		}
 		_rb2d.velocity = new Vector2(newVelocity, _rb2d.velocity.y);
 	}
@@ -127,10 +138,15 @@ public class Player : MonoBehaviour
 	private void MoveRight()
 	{
 		_animator.SetInteger("Direction", 1);
-		var newVelocity = _rb2d.velocity.x;
-		if (newVelocity < _walkSpeed)
+		var maxSpeed = _walkSpeed;
+		if (!CanJump)
 		{
-			newVelocity = Math.Min(newVelocity + _walkSpeed, _walkSpeed);
+			maxSpeed *= 0.1f;
+		}
+		var newVelocity = _rb2d.velocity.x;
+		if (newVelocity < maxSpeed)
+		{
+			newVelocity = Math.Min(newVelocity + maxSpeed, maxSpeed);
 		}
 		_rb2d.velocity = new Vector2(newVelocity, _rb2d.velocity.y);
 	}

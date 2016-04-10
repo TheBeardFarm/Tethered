@@ -27,7 +27,7 @@ public class Tether : MonoBehaviour
 
 	private void CreateChain()
 	{
-		GameObject previous = _localPlayer.TetherAnchor;
+		GameObject previous = _localPlayer.gameObject;
 		for (int i = 0; i < _chainLength; i++)
 		{
 			GameObject current = Instantiate(_chainLinkPrefab);
@@ -46,7 +46,7 @@ public class Tether : MonoBehaviour
 
 	private void LinkEnd(GameObject last)
 	{
-		var hinge = Link(last, _otherPlayer.TetherAnchor);
+		var hinge = Link(last, _otherPlayer.gameObject);
 		hinge.autoConfigureConnectedAnchor = false;
 		hinge.anchor = Vector2.zero;
 		hinge.connectedAnchor = Vector2.zero;
