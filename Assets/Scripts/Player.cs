@@ -47,7 +47,7 @@ public class Player : MonoBehaviour
 
 	private void ApplyForces()
 	{
-		_rb2d.AddForce(Physics2D.gravity, ForceMode2D.Force);
+		//_rb2d.AddForce(Physics2D.gravity, ForceMode2D.Force);
 
 		//Updates the rising/falling booleans for the animator
 		if (CanJump && !_animator.GetBool("IsJumpingUp"))
@@ -137,7 +137,7 @@ public class Player : MonoBehaviour
 		var maxSpeed = _walkSpeed;
 		if (!CanJump)
 		{
-			maxSpeed *= 0.1f;
+			maxSpeed *= 0.4f;
 		}
 		var newVelocity = _rb2d.velocity.x;
 		if (newVelocity > -maxSpeed)
@@ -153,7 +153,7 @@ public class Player : MonoBehaviour
 		var maxSpeed = _walkSpeed;
 		if (!CanJump)
 		{
-			maxSpeed *= 0.1f;
+			maxSpeed *= 0.4f;
 		}
 		var newVelocity = _rb2d.velocity.x;
 		if (newVelocity < maxSpeed)
