@@ -118,7 +118,7 @@ public class DynamicLink : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		if(Input.GetKey("down")) {
+		if(!Input.GetKey(KeyCode.Space)) {
 			UpdateLink();
 		}
 	}
@@ -177,10 +177,10 @@ public class DynamicLink : MonoBehaviour {
 			// TODO: incorperate a "width" or "thinkness" setting and modify scale based on this as well.
 			transform.localScale = new Vector3((scaleVector.x * newScale)+(1 - scaleVector.x), (scaleVector.y * newScale)+(1 - scaleVector.y), 1);
 			// in kinematic mode set the position to the midpoint in the distance manually
-			// if (isKinematic) {
+			if (isKinematic) {
 				transform.position = Vector3.Lerp(startPoint, endPoint, 0.5f);
 				transform.rotation = Quaternion.FromToRotation(-anchorDirection, new Vector3(distance.normalized.x, distance.normalized.y, 0));
-			// }
+			}
 			// TODO: test and adapt for sizes that would be different from 1.
 		}
 	}
